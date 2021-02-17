@@ -99,9 +99,26 @@ void addDevices(){
   espalexa.addDevice(Device_1_Name, firstLightChanged); //simplest definition, default state off
   espalexa.begin();
 }
+
 void setup()
 {
   Serial.begin(115200);
+
+  pinMode(RelayPin1, OUTPUT);
+  pinMode(wifiLed, OUTPUT);
+
+  //During Starting all Relays should TURN on
+  digitalWrite(RelayPin1, LOW);
+  
+    // Initialise wifi connection
+  wifiConnected = connectWifi();
+  if (wifiConnected){
+    addDevices();
+  }
+  else {
+    Serial.println("Cannot connect to WiFi. So in Manual Mode");
+    delay(1000);
+  }
    //ArduinoOTA code starts
   ArduinoOTA.onStart([]() {   
     String type;
@@ -135,30 +152,11 @@ void setup()
   });
   ArduinoOTA.begin();
 
-  pinMode(RelayPin1, OUTPUT);
-  pinMode(wifiLed, OUTPUT);
-
-  //During Starting all Relays should TURN on
-  digitalWrite(RelayPin1, LOW);
-
-  // Initialise wifi connection
-  wifiConnected = connectWifi();
-
-  if (wifiConnected)
-  {
-    addDevices();
-  }
-  else
-  {
-    Serial.println("Cannot connect to WiFi. So in Manual Mode");
-    delay(1000);
-  }
 }
 
 void loop()
 {
   ArduinoOTA.handle();
-
   if (WiFi.status() != WL_CONNECTED) {
     digitalWrite(wifiLed, HIGH); //Turn off WiFi LED
   }
