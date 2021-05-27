@@ -67,6 +67,7 @@ boolean connectWifi()
   int i = 0;
 
   WiFi.mode(WIFI_STA);
+  WiFi.hostname("Alexa-sala");
   WiFi.begin(ssid, password);
   Serial.println("");
   Serial.println("Connecting to WiFi");
